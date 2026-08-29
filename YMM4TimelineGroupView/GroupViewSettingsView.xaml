@@ -1,0 +1,227 @@
+<UserControl x:Class="YMM4TimelineGroupView.GroupViewSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:YMM4TimelineGroupView"
+             mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="500">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,12,0"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,4"/>
+        </Style>
+    </UserControl.Resources>
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="16">
+            <TextBlock Text="タイムライン グループ表示設定" FontSize="16" FontWeight="Bold" Margin="0,0,0,16"/>
+
+            <!-- 有効/無効 -->
+            <CheckBox Content="グループの枠線・背景ハイライト表示を有効にする" 
+                      IsChecked="{Binding IsEnabled, Mode=TwoWay}"
+                      FontWeight="SemiBold" Margin="0,0,0,16"/>
+
+            <!-- グループ表示スタイル -->
+            <GroupBox Header="表示スタイル" Margin="0,0,0,16" Padding="12">
+                <StackPanel>
+                    <Grid Margin="0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="描画タイプ:"/>
+                        <ComboBox Grid.Column="1" SelectedValue="{Binding DisplayStyle, Mode=TwoWay}" SelectedValuePath="Tag">
+                            <ComboBoxItem Content="塗りつぶし ＋ 枠線（推奨）" Tag="{x:Static local:GroupDisplayStyle.FillAndBorder}"/>
+                            <ComboBoxItem Content="枠線（ボーダー）のみ" Tag="{x:Static local:GroupDisplayStyle.BorderOnly}"/>
+                            <ComboBoxItem Content="塗りつぶし（背景）のみ" Tag="{x:Static local:GroupDisplayStyle.FillOnly}"/>
+                        </ComboBox>
+                    </Grid>
+
+                    <Grid Margin="0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="カラーモード:"/>
+                        <ComboBox Grid.Column="1" SelectedValue="{Binding ColorMode, Mode=TwoWay}" SelectedValuePath="Tag">
+                            <ComboBoxItem Content="カスタム単色" Tag="{x:Static local:GroupColorMode.CustomSingleColor}"/>
+                            <ComboBoxItem Content="グループごとに自動色分け" Tag="{x:Static local:GroupColorMode.AutoPerGroup}"/>
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- カラー・パレット設定（完全自作カラーピッカー） -->
+            <GroupBox Header="カラー選択・パレット" Margin="0,0,0,16" Padding="12">
+                <StackPanel>
+                    <!-- 現在のカラー プレビューとカラーコード -->
+                    <Grid Margin="0,4,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="選択中のカラー:"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Border x:Name="CurrentColorBox" Width="48" Height="28" CornerRadius="4" 
+                                    BorderBrush="#888" BorderThickness="1.5" Margin="0,0,12,0"/>
+                            <TextBlock Text="HEX:" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBox x:Name="HexTextBox" Width="90" VerticalAlignment="Center" 
+                                     Padding="4,2" TextChanged="HexTextBox_TextChanged"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- プリセット・パレット（18色チップ） -->
+                    <TextBlock Text="カラーパレット (クリックで即時適用):" Margin="0,4,0,6" FontWeight="SemiBold"/>
+                    <Border Background="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" 
+                            CornerRadius="4" Padding="6" Margin="0,0,0,12">
+                        <WrapPanel x:Name="ColorPalettePanel"/>
+                    </Border>
+
+                    <!-- RGB スライダー -->
+                    <TextBlock Text="RGB 微調整:" Margin="0,0,0,6" FontWeight="SemiBold"/>
+                    
+                    <!-- R -->
+                    <Grid Margin="0,3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="R" Foreground="#E53935" FontWeight="Bold"/>
+                        <Slider x:Name="RedSlider" Grid.Column="1" Minimum="0" Maximum="255" SmallChange="1" LargeChange="10" 
+                                ValueChanged="RgbSlider_ValueChanged" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="RedText" Grid.Column="2" Text="0" HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <!-- G -->
+                    <Grid Margin="0,3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="G" Foreground="#43A047" FontWeight="Bold"/>
+                        <Slider x:Name="GreenSlider" Grid.Column="1" Minimum="0" Maximum="255" SmallChange="1" LargeChange="10" 
+                                ValueChanged="RgbSlider_ValueChanged" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="GreenText" Grid.Column="2" Text="0" HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <!-- B -->
+                    <Grid Margin="0,3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="B" Foreground="#1E88E5" FontWeight="Bold"/>
+                        <Slider x:Name="BlueSlider" Grid.Column="1" Minimum="0" Maximum="255" SmallChange="1" LargeChange="10" 
+                                ValueChanged="RgbSlider_ValueChanged" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="BlueText" Grid.Column="2" Text="0" HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- 透明度・枠線の外観調整 -->
+            <GroupBox Header="透明度・外観調整" Margin="0,0,0,16" Padding="12">
+                <StackPanel>
+                    <!-- 塗りつぶし透明度 -->
+                    <Grid Margin="0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="背景の不透明度:"/>
+                        <Slider Grid.Column="1" Minimum="0.0" Maximum="1.0" Value="{Binding FillOpacity, Mode=TwoWay}" 
+                                SmallChange="0.05" LargeChange="0.1" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="{Binding FillOpacity, StringFormat={}{0:P0}}" HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <!-- 枠線透明度 -->
+                    <Grid Margin="0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="枠線の不透明度:"/>
+                        <Slider Grid.Column="1" Minimum="0.0" Maximum="1.0" Value="{Binding BorderOpacity, Mode=TwoWay}" 
+                                SmallChange="0.05" LargeChange="0.1" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="{Binding BorderOpacity, StringFormat={}{0:P0}}" HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <!-- 枠線の太さ -->
+                    <Grid Margin="0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="枠線の太さ (px):"/>
+                        <Slider Grid.Column="1" Minimum="1.0" Maximum="8.0" Value="{Binding BorderThickness, Mode=TwoWay}" 
+                                SmallChange="1" LargeChange="1" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="{Binding BorderThickness, StringFormat={}{0:F0} px}" HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <!-- 角丸 -->
+                    <Grid Margin="0,6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="角丸 (CornerRadius):"/>
+                        <Slider Grid.Column="1" Minimum="0.0" Maximum="16.0" Value="{Binding CornerRadius, Mode=TwoWay}" 
+                                SmallChange="1" LargeChange="2" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="{Binding CornerRadius, StringFormat={}{0:F0} px}" HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- ラベル表示設定 -->
+            <GroupBox Header="グループ名ラベル表示" Margin="0,0,0,16" Padding="12">
+                <StackPanel>
+                    <CheckBox Content="「グループ N」ラベルを表示する" 
+                              IsChecked="{Binding ShowLabel, Mode=TwoWay}" Margin="0,0,0,8"/>
+
+                    <CheckBox Content="ラベルを枠の上部に配置する（外側へ逃がす）" 
+                              IsChecked="{Binding IsLabelAbove, Mode=TwoWay}" 
+                              IsEnabled="{Binding ShowLabel}" Margin="0,0,0,8"/>
+
+                    <Grid Margin="0,4" IsEnabled="{Binding ShowLabel}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="ラベルの不透明度:"/>
+                        <Slider Grid.Column="1" Minimum="0.1" Maximum="1.0" Value="{Binding LabelOpacity, Mode=TwoWay}" 
+                                SmallChange="0.05" LargeChange="0.1" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="{Binding LabelOpacity, StringFormat={}{0:P0}}" HorizontalAlignment="Right"/>
+                    </Grid>
+
+                    <Grid Margin="0,4" IsEnabled="{Binding ShowLabel}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="50"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="フォントサイズ:"/>
+                        <Slider Grid.Column="1" Minimum="8.0" Maximum="18.0" Value="{Binding LabelFontSize, Mode=TwoWay}" 
+                                SmallChange="1" LargeChange="2" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="{Binding LabelFontSize, StringFormat={}{0:F0} pt}" HorizontalAlignment="Right"/>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+
+            <TextBlock Text="※ 設定変更はリアルタイムにタイムラインへ反映されます。" 
+                       FontStyle="Italic" Opacity="0.7" FontSize="11" Margin="0,8,0,0"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+	<PlatformTarget>x64</PlatformTarget>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="YukkuriMovieMaker.Plugin">
+      <HintPath>C:\YMM4\YukkuriMovieMaker.Plugin.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="YukkuriMovieMaker.Controls">
+      <HintPath>C:\YMM4\YukkuriMovieMaker.Controls.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="YukkuriMovieMaker">
+      <HintPath>C:\YMM4\YukkuriMovieMaker.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ReactiveProperty">
+      <HintPath>C:\YMM4\ReactiveProperty.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ReactiveProperty.Core">
+      <HintPath>C:\YMM4\ReactiveProperty.Core.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="System.Reactive">
+      <HintPath>C:\YMM4\System.Reactive.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>C:\YMM4\Newtonsoft.Json.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>C:\YMM4\user\plugin\EncodePreviewPlugin\0Harmony.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

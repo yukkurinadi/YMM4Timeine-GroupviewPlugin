@@ -26,6 +26,10 @@
             <CheckBox Content="グループの枠線・背景ハイライト表示を有効にする" 
                       IsChecked="{Binding IsEnabled, Mode=TwoWay}"
                       FontWeight="SemiBold" Margin="0,0,0,16"/>
+            <CheckBox Content="スクロール時にラベルを左端に固定する"
+                      IsChecked="{Binding IsLabelSticky}"
+                      IsEnabled="{Binding ShowLabel}"
+                      Margin="16,5,0,5" />
 
             <!-- グループ表示スタイル -->
             <GroupBox Header="表示スタイル" Margin="0,0,0,16" Padding="12">

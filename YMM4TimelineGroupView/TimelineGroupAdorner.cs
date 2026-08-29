@@ -230,7 +230,7 @@ namespace YMM4TimelineGroupView
 
                     if (settings.ShowLabel)
                     {
-                        DrawGroupLabel(dc, g.GroupId, displayIndex, left, top, baseColor, settings, origin.Y);
+                        DrawGroupLabel(dc, g.GroupId, displayIndex, left, top, width, baseColor, settings, origin.X, origin.Y);
                     }
                 }
             }
@@ -238,7 +238,7 @@ namespace YMM4TimelineGroupView
         }
 
         private void DrawGroupLabel(DrawingContext dc, int groupId, int displayIndex,
-            double x, double y, Color baseColor, TimelineGroupViewSettings settings, double gridTop)
+            double x, double y, double width, Color baseColor, TimelineGroupViewSettings settings, double gridLeft, double gridTop)
         {
             string displayName = GroupNameStore.Instance.GetName(groupId)
                                  ?? $"グループ {displayIndex}";
@@ -261,10 +261,20 @@ namespace YMM4TimelineGroupView
             double bgWidth = formattedText.Width + paddingX * 2;
             double bgHeight = formattedText.Height + paddingY * 2;
 
+            // ── ラベルの X 座標計算（固定表示オプションの反映） ──
+            double labelX = x;
+            if (settings.IsLabelSticky)
+            {
+                // グループの左端が見切れても画面左端（gridLeft）に追従し、
+                // グループの右端を超えて押し出されないように制限
+                double maxLabelX = x + width - bgWidth;
+                labelX = Math.Max(x, Math.Min(gridLeft + 2.0, maxLabelX));
+            }
+
             double labelTop = settings.IsLabelAbove && y - bgHeight >= gridTop
                 ? y - bgHeight : y + 2.0;
 
-            var labelBgRect = new Rect(x, labelTop, bgWidth, bgHeight);
+            var labelBgRect = new Rect(labelX, labelTop, bgWidth, bgHeight);
 
             var bgBrush = new SolidColorBrush(Color.FromArgb((byte)(labelOpacity * 200), 20, 20, 20));
             bgBrush.Freeze();
@@ -273,7 +283,7 @@ namespace YMM4TimelineGroupView
             var bPen = new Pen(bBrush, 1.0); bPen.Freeze();
 
             dc.DrawRoundedRectangle(bgBrush, bPen, labelBgRect, 3.0, 3.0);
-            dc.DrawText(formattedText, new Point(x + paddingX, labelTop + paddingY));
+            dc.DrawText(formattedText, new Point(labelX + paddingX, labelTop + paddingY));
         }
 
         private static Color GetAutoColor(int id)

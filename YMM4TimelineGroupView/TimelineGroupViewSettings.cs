@@ -46,6 +46,18 @@ namespace YMM4TimelineGroupView
             set => Set(ref _isEnabled, value, nameof(IsEnabled));
         }
 
+        // TimelineGroupViewSettings.cs 内のプロパティ定義箇所に追加
+
+        private bool _isLabelSticky = true;
+        /// <summary>
+        /// スクロール時にグループラベルを画面左端に固定表示するかどうか
+        /// </summary>
+        public bool IsLabelSticky
+        {
+            get => _isLabelSticky;
+            set => Set(ref _isLabelSticky, value, nameof(IsLabelSticky));
+        }
+
         private GroupDisplayStyle _displayStyle = GroupDisplayStyle.FillAndBorder;
         public GroupDisplayStyle DisplayStyle
         {

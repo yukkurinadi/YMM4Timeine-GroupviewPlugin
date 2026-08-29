@@ -1,0 +1,2 @@
+# YMM4Timeine-GroupviewPlugin
+YMM4でグループをハイライトするプラグイン
